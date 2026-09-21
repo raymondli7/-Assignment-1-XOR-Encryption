@@ -3,9 +3,9 @@
 
 #define MAX_KEY_LEN 256
 
-void xorEncryptDecrypt(char *message, const char *key) {
+void xorEncryptDecrypt(char *message, const char *key, int dataLen) {
     int keyLen = strlen(key);
-    for (int i = 0; message[i] != '\0'; ++i) {
+    for (int i = 0; i < dataLen; ++i) {
         message[i] ^= key[i % keyLen];
     }
 }
@@ -14,6 +14,7 @@ int main() {
     char choice;
     printf("Enter 'e' to encrypt or 'd' to decrypt: ");
     scanf(" %c", &choice);
+    while (getchar() != '\n');
 
     if (choice == 'e') {
         char message[1024];
@@ -35,9 +36,9 @@ int main() {
             perror("Error opening file for writing");
             return 1;
         }
-
-        xorEncryptDecrypt(message, key);
-        fwrite(message, sizeof(char), strlen(message), file);
+        int msgLen = strlen(message)
+        xorEncryptDecrypt(message, key, msgLen);
+        fwrite(message, sizeof(char), msgLen, file);
         fclose(file);
     } else if (choice == 'd') {
         char filename[256];
@@ -70,7 +71,7 @@ int main() {
         encryptedData[fileSize] = '\0';
         fclose(file);
 
-        xorEncryptDecrypt(encryptedData, key);
+        xorEncryptDecrypt(encryptedData, key, fileSize);
         printf("Decrypted message: %s\n", encryptedData);
 
         free(encryptedData);
